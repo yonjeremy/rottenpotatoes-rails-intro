@@ -16,8 +16,8 @@ class MoviesController < ApplicationController
     @selected = @all_ratings
     
     if params[:ratings] and params[:sort_param]
-      @selected = session[:ratings].keys
-      @movies = Movie.where(rating: @selected).order("#{session[:sort_param]} ")
+      @selected = params[:ratings].keys
+      @movies = Movie.where(rating: @selected).order("#{params[:sort_param]} ")
       session[:sort_param] = params[:sort_param]
       session[:ratings] = params[:ratings]
 
@@ -29,7 +29,9 @@ class MoviesController < ApplicationController
       redirect_to :action => "index", sort_param: params[:sort_param], ratings: session[:ratings]
       
     else
-      # session[:sort_param] = ""
+      session[:ratings] = Hash[@all_ratings.map {|k,v| [k, 1]}] if session[:ratings].blank?
+      puts session[:ratings]
+      session[:sort_param] = "title" if session[:sort_param].blank?
       redirect_to :action => "index", sort_param: session[:sort_param], ratings: session[:ratings]
 
       
