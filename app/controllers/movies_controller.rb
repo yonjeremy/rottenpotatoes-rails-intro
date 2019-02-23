@@ -17,6 +17,7 @@ class MoviesController < ApplicationController
     
     session[:ssort_param] = params[:sort_param] if params[:sort_param]
     session[:sratings] = params[:ratings] if params[:ratings]
+    @selected = @all_ratings
     
     if session[:sratings]
       @selected = session[:sratings].keys
@@ -29,7 +30,7 @@ class MoviesController < ApplicationController
     @className = 'hilite' && session[:ssort_param]
 
 
-    # render :text => params[:ratings].keys.inspect
+    # render :text => @all_ratings.inspect
 
   end
 
