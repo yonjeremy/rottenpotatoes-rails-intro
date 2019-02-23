@@ -13,16 +13,20 @@ class MoviesController < ApplicationController
   def index
     
     @all_ratings = Movie.getRatings
-
     
-    if params[:ratings]
-      @selected =  params[:ratings].keys
-      @movies = Movie.where(rating: @selected).order("#{params[:sort_param]} ")
+    
+    session[:ssort_param] = params[:sort_param] if params[:sort_param]
+    session[:sratings] = params[:ratings] if params[:ratings]
+    
+    if session[:sratings]
+      @selected = session[:sratings].keys
+      @movies = Movie.where(rating: @selected).order("#{session[:ssort_param]} ")
+      
     else
-      @movies = Movie.order("#{params[:sort_param]} ")
+      @movies = Movie.order("#{session[:ssort_param]} ")
     end
     
-    @className = 'hilite' && params[:sort_param]
+    @className = 'hilite' && session[:ssort_param]
 
 
     # render :text => params[:ratings].keys.inspect
