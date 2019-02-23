@@ -13,24 +13,33 @@ class MoviesController < ApplicationController
   def index
     
     @all_ratings = Movie.getRatings
-    
-    
-    session[:ssort_param] = params[:sort_param] if params[:sort_param]
-    session[:sratings] = params[:ratings] if params[:ratings]
     @selected = @all_ratings
     
-    if session[:sratings]
-      @selected = session[:sratings].keys
-      @movies = Movie.where(rating: @selected).order("#{session[:ssort_param]} ")
+    if params[:ratings] and params[:sort_param]
+      @selected = session[:ratings].keys
+      @movies = Movie.where(rating: @selected).order("#{session[:sort_param]} ")
+      session[:sort_param] = params[:sort_param]
+      session[:ratings] = params[:ratings]
+
+      
+    elsif params[:ratings] and not params[:sort_param]
+      redirect_to :action => "index", sort_param: session[:sort_param], ratings: params[:ratings]
+
+    elsif params[:sort_param] and not params[:ratings]
+      redirect_to :action => "index", sort_param: params[:sort_param], ratings: session[:ratings]
       
     else
-      @movies = Movie.order("#{session[:ssort_param]} ")
+      session[:sort_param] = ""
+      redirect_to :action => "index", sort_param: session[:sort_param], ratings: session[:ratings]
+
+      
+      # render :text => params[:ratings].keys.inspect
+
     end
     
-    @className = 'hilite' && session[:ssort_param]
+    @className = 'hilite' && session[:sort_param]
 
-
-    # render :text => @all_ratings.inspect
+    # redirect_to :action => "index", sort_param: params[:sort_param], ratings: session[:ratings]
 
   end
 
