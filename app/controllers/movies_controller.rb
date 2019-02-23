@@ -12,36 +12,37 @@ class MoviesController < ApplicationController
 
   def index
     
+    # get all the ratings
     @all_ratings = Movie.getRatings
     @selected = @all_ratings
-    
+
+    # if both ratings and sort params are given
     if params[:ratings] and params[:sort_param]
       @selected = params[:ratings].keys
       @movies = Movie.where(rating: @selected).order("#{params[:sort_param]} ")
       session[:sort_param] = params[:sort_param]
       session[:ratings] = params[:ratings]
 
-      
+    # if only ratings param is given
     elsif params[:ratings] and not params[:sort_param]
       redirect_to :action => "index", sort_param: session[:sort_param], ratings: params[:ratings]
 
+    # if only sort params is given
     elsif params[:sort_param] and not params[:ratings]
       redirect_to :action => "index", sort_param: params[:sort_param], ratings: session[:ratings]
       
+    # if no sessions are available and no params are passed through
     else
+      # make new hash with all ratings assigned value 1
       session[:ratings] = Hash[@all_ratings.map {|k,v| [k, 1]}] if session[:ratings].blank?
-      puts session[:ratings]
+      # make sort param equals title
       session[:sort_param] = "title" if session[:sort_param].blank?
       redirect_to :action => "index", sort_param: session[:sort_param], ratings: session[:ratings]
-
-      
-      # render :text => params[:ratings].keys.inspect
-
     end
     
+    # highlight the header for sort param
     @className = 'hilite' && session[:sort_param]
 
-    # redirect_to :action => "index", sort_param: params[:sort_param], ratings: session[:ratings]
 
   end
 
