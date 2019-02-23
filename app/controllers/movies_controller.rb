@@ -29,7 +29,7 @@ class MoviesController < ApplicationController
       redirect_to :action => "index", sort_param: params[:sort_param], ratings: session[:ratings]
       
     else
-      session[:sort_param] = ""
+      # session[:sort_param] = ""
       redirect_to :action => "index", sort_param: session[:sort_param], ratings: session[:ratings]
 
       
